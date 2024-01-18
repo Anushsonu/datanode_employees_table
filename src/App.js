@@ -4,24 +4,37 @@ import EditModal from "./components/EditModal";
 import AddModal from "./components/AddModal";
 
 function App() {
-  const [data, setData] = useState([]);
+  const initialData = JSON.parse(sessionStorage.getItem("employeeData")) || [];
+
+  const [data, setData] = useState(initialData);
   const [page, setPage] = useState(1);
   const [addModal, setAddModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
   const [editEmployee, setEditEmployee] = useState([]);
 
   const getData = async () => {
-    const data = await fetch(
-      "https://dummy.restapiexample.com/api/v1/employees"
-    );
-    const res = await data?.json();
-    // console.log(res);
-    setData(res?.data);
+    try {
+      const response = await fetch(
+        "https://dummy.restapiexample.com/api/v1/employees"
+      );
+      const result = await response.json();
+      setData(result?.data);
+      // Store data in sessionStorage
+      sessionStorage.setItem("employeeData", JSON.stringify(result?.data));
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   };
+
   useEffect(() => {
-    console.log("FETCHED DATA");
-    getData();
-    // console.log(data);
+    // Check if there is data in sessionStorage before making the API call
+    const storedData = JSON.parse(sessionStorage.getItem("employeeData"));
+
+    if (storedData && storedData.length > 0) {
+      setData(storedData);
+    } else {
+      getData();
+    }
   }, []);
 
   const selectPageHandler = (selectedPage) => {
@@ -39,7 +52,12 @@ function App() {
     const newData = data.filter(
       (newEmps) => newEmps.id !== selectedEmployee[0].id
     );
+
+    // Update state first
     setData(newData);
+
+    // Update sessionStorage after deleting employee
+    sessionStorage.setItem("employeeData", JSON.stringify(newData));
   };
 
   return (

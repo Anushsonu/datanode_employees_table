@@ -4,6 +4,7 @@ const EditModal = ({ setEditModal, data, editEmployee, setData }) => {
   const [newName, setNewName] = useState(editEmployee[0]?.employee_name);
   const [newAge, setNewAge] = useState(editEmployee[0]?.employee_age);
   const [newSalary, setNewSalary] = useState(editEmployee[0]?.employee_salary);
+
   const formSubmit = (e) => {
     e?.preventDefault();
 
@@ -26,6 +27,9 @@ const EditModal = ({ setEditModal, data, editEmployee, setData }) => {
 
     // Update the state with the new array
     setData(newData);
+
+    // Update session storage with the modified data
+    sessionStorage.setItem("employeeData", JSON.stringify(newData));
 
     // Close the modal
     setEditModal(false);
@@ -75,10 +79,10 @@ const EditModal = ({ setEditModal, data, editEmployee, setData }) => {
             type="number"
           />
           <button
-            className="border border-black px-3 py-2 w-[200px]"
+            className="border border-black px-3 py-2 w-[200px] bg-green-400"
             onClick={formSubmit}
           >
-            Add Employee
+            Edit Employee
           </button>
         </form>
       </div>

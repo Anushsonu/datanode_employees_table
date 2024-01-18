@@ -1,12 +1,13 @@
 import React, { useRef } from "react";
 
 const AddModal = ({ setAddModal, data }) => {
-  console.log(data);
   let newName = useRef("");
   let newAge = useRef();
   let newSalary = useRef();
+
   const formSubmit = (e) => {
     e?.preventDefault();
+
     let newEmployee = {
       employee_name: newName.current,
       employee_age: newAge.current,
@@ -14,10 +15,17 @@ const AddModal = ({ setAddModal, data }) => {
       id: data.length + 1,
       profile_image: "",
     };
-    console.log("New employee :", newEmployee);
+
+    // Update data state with the new employee
     data.unshift(newEmployee);
+
+    // Update session storage with the modified data
+    sessionStorage.setItem("employeeData", JSON.stringify(data));
+
+    // Close the modal
     setAddModal(false);
   };
+
   return (
     <div
       className="my_modal absolute inset-0 flex items-center justify-center bg-black bg-opacity-50"
@@ -34,7 +42,6 @@ const AddModal = ({ setAddModal, data }) => {
           onSubmit={formSubmit}
         >
           <input
-            // value={newName.current}
             placeholder="Name"
             required
             ref={newName}
@@ -63,7 +70,7 @@ const AddModal = ({ setAddModal, data }) => {
             type="number"
           />
           <button
-            className="border border-black px-3 py-2 w-[200px]"
+            className="border border-black px-3 py-2 w-[200px] bg-green-400"
             onClick={formSubmit}
           >
             Add Employee

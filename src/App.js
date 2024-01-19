@@ -2,10 +2,11 @@ import { useEffect, useState } from "react";
 import "./App.css";
 import EditModal from "./components/EditModal";
 import AddModal from "./components/AddModal";
+import Notification from "./components/Notification";
 
 function App() {
   const initialData = JSON.parse(sessionStorage.getItem("employeeData")) || [];
-
+  const [notification, setNotification] = useState(null);
   const [data, setData] = useState(initialData);
   const [page, setPage] = useState(1);
   const [addModal, setAddModal] = useState(false);
@@ -21,8 +22,10 @@ function App() {
       setData(result?.data);
       // Store data in sessionStorage
       sessionStorage.setItem("employeeData", JSON.stringify(result?.data));
+      setNotification("Data fetched successfully!");
     } catch (error) {
       console.error("Error fetching data:", error);
+      setNotification("Error fetching data. Please try again later.");
     }
   };
 
@@ -58,6 +61,7 @@ function App() {
 
     // Update sessionStorage after deleting employee
     sessionStorage.setItem("employeeData", JSON.stringify(newData));
+    setNotification("Employee deleted successfully!");
   };
 
   return (
@@ -168,17 +172,31 @@ function App() {
               </span>
             </div>
           )}
-          {addModal && <AddModal setAddModal={setAddModal} data={data} />}
+          {addModal && (
+            <AddModal
+              setAddModal={setAddModal}
+              data={data}
+              setNotification={setNotification}
+            />
+          )}
           {editModal && (
             <EditModal
               setEditModal={setEditModal}
               data={data}
               editEmployee={editEmployee}
               setData={setData}
+              setNotification={setNotification}
+              // notification={notification}
             />
           )}
         </div>
       </div>
+      {notification && (
+        <Notification
+          message={notification}
+          onClose={() => setNotification(null)}
+        />
+      )}
     </>
   );
 }

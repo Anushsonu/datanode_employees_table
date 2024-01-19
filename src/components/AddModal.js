@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 
-const AddModal = ({ setAddModal, data }) => {
+const AddModal = ({ setAddModal, data, setNotification }) => {
   let newName = useRef("");
   let newAge = useRef();
   let newSalary = useRef();
@@ -21,7 +21,7 @@ const AddModal = ({ setAddModal, data }) => {
 
     // Update session storage with the modified data
     sessionStorage.setItem("employeeData", JSON.stringify(data));
-
+    setNotification("Employee added successfully !");
     // Close the modal
     setAddModal(false);
   };
